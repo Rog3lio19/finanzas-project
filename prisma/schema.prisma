@@ -10,7 +10,7 @@ datasource db {
 model gastos_fijos {
   id          Int      @id @default(autoincrement())
   nombre      String   @db.VarChar(100)
-  monto       Float?
+  monto       String?  @db.VarChar(50)
   pagado      Boolean?
   fecha       String?  @db.VarChar(20)
   comentarios String?  @db.Text

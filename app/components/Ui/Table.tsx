@@ -14,9 +14,16 @@ import {
 interface Props {
   columns: any[];
   rowData: any[];
+  refreshData: () => void;
+  deleteMethod: (id: number) => Promise<void>;
 }
 
-export const TableComponent: FC<Props> = ({ columns, rowData }) => {
+export const TableComponent: FC<Props> = ({
+  columns,
+  rowData,
+  deleteMethod,
+  refreshData,
+}) => {
   return (
     <div className="flex w-full justify-center item-center mt-4">
       <Table>
@@ -49,49 +56,41 @@ export const TableComponent: FC<Props> = ({ columns, rowData }) => {
               {column.columnName}
             </Table.HeadCell>
           ))}
+          <Table.HeadCell className="min-w-[150px]">Acciones</Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-gray-25 divide-y">
           {rowData.map((row, index) => (
             <Table.Row key={index}>
-              {columns.map(({ propertyName }, index) => (
-                <Table.Cell key={index}>{row[propertyName]}</Table.Cell>
-              ))}
+              {columns.map(({ propertyName }, index) => {
+                if (propertyName === 'monto')
+                  return (
+                    <Table.Cell key={row.id} className="text-right">
+                      {row[propertyName].includes('.')
+                        ? `$${row[propertyName]}`
+                        : `$${row[propertyName]}.00`}
+                    </Table.Cell>
+                  );
+                return <Table.Cell key={index}>{row[propertyName]}</Table.Cell>;
+              })}
               <Table.Cell>
-                <Popover
-                  showDismissIcon={false}
-                  showArrow={false}
-                  className="w-52 border border-metal-100 p-2"
-                >
-                  <Popover.Container className="!mt-0 !block">
-                    <ul>
-                      <li className="rounded px-2 py-1 hover:bg-metal-100">
-                        <button className="flex w-full items-center justify-between text-body-4 font-normal text-metal-600">
-                          <span>Delete</span>
-                          <span>
-                            <Trash />
-                          </span>
-                        </button>
-                      </li>
-                      <li className="rounded px-2 py-1 hover:bg-metal-100">
-                        <button className="flex w-full items-center justify-between text-body-4 font-normal text-metal-600">
-                          <span>Edit</span>
-                          <span>
-                            <Pencil />
-                          </span>
-                        </button>
-                      </li>
-                    </ul>
-                  </Popover.Container>
-                  <Popover.Action>
-                    <Button type="outlineGray" size="xs" circle={true}>
-                      <DotsThreeOutline
-                        size={14}
-                        color="#5E718D"
-                        weight="bold"
-                      />
-                    </Button>
-                  </Popover.Action>
-                </Popover>
+                <div className="flex gap-x-4 items-center">
+                  <button
+                    onClick={async () => {
+                      await deleteMethod(row.id);
+                      refreshData();
+                    }}
+                    className="font-normal text-metal-600"
+                  >
+                    <span className="hover:text-red-500">
+                      <Trash size={20} />
+                    </span>
+                  </button>
+                  <button className="font-normal text-metal-600">
+                    <span className="hover:text-blue-500">
+                      <Pencil size={20} />
+                    </span>
+                  </button>
+                </div>
               </Table.Cell>
             </Table.Row>
           ))}
