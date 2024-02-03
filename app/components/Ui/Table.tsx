@@ -1,15 +1,9 @@
 'use client';
 
 import { FC } from 'react';
-import { Avatar, Badge, Button, Popover, Table } from 'keep-react';
-import {
-  ArrowsDownUp,
-  Crown,
-  Cube,
-  DotsThreeOutline,
-  Pencil,
-  Trash,
-} from 'phosphor-react';
+import { Table } from 'keep-react';
+import { Pencil, Trash } from 'phosphor-react';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   columns: any[];
@@ -24,6 +18,12 @@ export const TableComponent: FC<Props> = ({
   deleteMethod,
   refreshData,
 }) => {
+  const router = useRouter();
+
+  const handleEdit = (data: any) => {
+    router.push(`/gastos-fijos/edit/?id=${data.id}`);
+  };
+
   return (
     <div className="flex w-full justify-center item-center mt-4">
       <Table>
@@ -61,17 +61,15 @@ export const TableComponent: FC<Props> = ({
         <Table.Body className="divide-gray-25 divide-y">
           {rowData.map((row, index) => (
             <Table.Row key={index}>
-              {columns.map(({ propertyName }, index) => {
-                if (propertyName === 'monto')
-                  return (
-                    <Table.Cell key={row.id} className="text-right">
-                      {row[propertyName].includes('.')
-                        ? `$${row[propertyName]}`
-                        : `$${row[propertyName]}.00`}
-                    </Table.Cell>
-                  );
-                return <Table.Cell key={index}>{row[propertyName]}</Table.Cell>;
-              })}
+              {columns.map(({ propertyName }, index) =>
+                propertyName === 'monto' ? (
+                  <Table.Cell key={row.id} className="text-right">
+                    {`$${row[propertyName]}`}
+                  </Table.Cell>
+                ) : (
+                  <Table.Cell key={index}>{row[propertyName]}</Table.Cell>
+                )
+              )}
               <Table.Cell>
                 <div className="flex gap-x-4 items-center">
                   <button
@@ -85,7 +83,12 @@ export const TableComponent: FC<Props> = ({
                       <Trash size={20} />
                     </span>
                   </button>
-                  <button className="font-normal text-metal-600">
+                  <button
+                    onClick={() => {
+                      handleEdit(row);
+                    }}
+                    className="font-normal text-metal-600"
+                  >
                     <span className="hover:text-blue-500">
                       <Pencil size={20} />
                     </span>

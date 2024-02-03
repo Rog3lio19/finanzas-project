@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { getGastosFijos } from '../services';
+import { getGastosFijos } from '@/app/services';
 
 export const useGastosFijos = () => {
   const [gastos, setGastos] = useState<any>([]);

@@ -1,6 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/libs/prisma';
 
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const id = Number(params.id);
+
+    await prisma.$connect();
+    const gastoFijo = await prisma.gastos_fijos.findFirst({
+      where: {
+        id,
+      },
+    });
+    if (!gastoFijo)
+      return NextResponse.json(
+        { message: 'No se encontro ese registro' },
+        { status: 400 }
+      );
+    await prisma.$disconnect();
+    return NextResponse.json(gastoFijo, { status: 200 });
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json(
+      { message: 'Error al actualizar, revise la consola del servidor' },
+      { status: 400 }
+    );
+  }
+}
 export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
@@ -22,11 +50,11 @@ export async function PUT(
         { status: 400 }
       );
     await prisma.$disconnect();
-    return NextResponse.json(gastosFijos, { status: 200 });
+    return NextResponse.json('Gasto fijo actualizado', { status: 200 });
   } catch (error) {
     console.log(error);
     return NextResponse.json(
-      { message: 'Error al actualizar, revise la consola del servidor2' },
+      { message: 'Error al actualizar, revise la consola del servidor' },
       { status: 400 }
     );
   }

@@ -16,6 +16,33 @@ export const getGastosFijos = async () => {
   }
 };
 
+export async function getGastoFijo(id: number) {
+  try {
+    const res = await fetch(`http://localhost:3000/api/gastos-fijos/${id}`);
+    const json = await res.json();
+    return json;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updateGastoFijo(id: number, data: any) {
+  try {
+    const res = await fetch(`http://localhost:3000/api/gastos-fijos/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    const json = await res.json();
+    return json;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function deleteGastoFijo(id: number) {
   try {
     const res = await fetch(`api/gastos-fijos/${id}`, {

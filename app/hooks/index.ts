@@ -1,1 +1,1 @@
-export * from './useGastosFijos';
+export * from './gastos-fijos';

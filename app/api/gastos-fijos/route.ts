@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       );
 
     await prisma.$disconnect();
-    return NextResponse.json(gastosFijos, { status: 200 });
+    return NextResponse.json('Gasto fijo creado', { status: 200 });
   } catch (error) {
     console.log(error);
     return NextResponse.json(
